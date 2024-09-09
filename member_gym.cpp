@@ -323,9 +323,10 @@ void utama(vector<formulir>& member,formulir &data, int &nomorkartu,int &jumlahp
   int a = 0; 
   garis();
   cout << "Masukkan Jumlah Pendaftar : "; cin >> jumlahpendaftar; cin.ignore();
+  int pendaftar = jumlahpendaftar/jumlahpendaftar;
   while(a <= jumlahpendaftar){
     pendaftaran_member(member,data,nomorkartu);
-    harga_member(data,jumlahpendaftar,durasi_bulan);
+    harga_member(data,pendaftar,durasi_bulan);
     a++; 
     jumlahpendaftar--;
     cin.ignore();
@@ -451,8 +452,7 @@ void cari_pengunjung( const vector<formulir>& data_pengunjung, const string &nam
 
 };
 
-
-//deksripsi 
+//deksripsi
 int main(){
 
   formulir data;  
@@ -496,7 +496,7 @@ int main(){
 
             //kondisi untuk ketiga pilihan tersebut 
             if(input == "cek"){
-                cin.ignore();
+                
                 clearscreen();
                 carimember(member,mencarinama,data);
                 string kembaliInput;        
