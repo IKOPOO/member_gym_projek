@@ -142,6 +142,7 @@ void pendaftaran_member(vector<formulir>& member,formulir data,int &nomorkartu){
     data.tanggal_pendaftaran = getTimeStr();
     // data.masamember = waktu_member(durasi_bulan);
     cout << data.tanggal_pendaftaran << endl;
+    cout << data.masamember << endl;
     cout << endl;
     cout << "pastikan semua sudah terisi !! " << endl;
     single();
@@ -200,7 +201,7 @@ void bayar(const formulir &data, int &jumlahpendaftar, int dataharga[],int p){
   cout << "Nama " << setw(17) << ":" << pendaftar.nama << endl; 
   cout << "Alamat " << setw(15) << ":" << pendaftar.alamat << endl; 
   cout << "No-telpon " << setw(12) << ":" << pendaftar.no_tlp << endl;
-  cout << "Masa aktif " << setw(11) << ":"<<data.masamember << endl;
+  cout << "Masa aktif " << setw(11) << ":"<< data.masamember << endl;
   cout << endl; 
   cout << "berikut harga yang harus anda bayar" << endl; 
   p--;
@@ -224,11 +225,11 @@ void bayar(const formulir &data, int &jumlahpendaftar, int dataharga[],int p){
 //array data harga
 int dataharga[3] = {445000,385000,325000};
 
-void harga_member(formulir data, int &jumlahpendaftar,int durasi_bulan){
+void harga_member( int &jumlahpendaftar,int durasi_bulan){
 
   //kamus lokal 
   int pilih;
-  //const formulir& pendaftar = member.back();
+  formulir &data = member.back();
 
   //deskripsi
   cout << "Daftar membership MAK GYM" << endl; 
@@ -241,27 +242,23 @@ void harga_member(formulir data, int &jumlahpendaftar,int durasi_bulan){
   garis();
   cout << "Silahkan tentukan pilihan anda !!" << endl; 
   cout << "Pilih : " ; cin >> pilih;  
-  //kondisi jika kita memilih dari tiga pilihan di atas 
+  //kondisi jika kita memilih dari tiga pilihan di atas x`
   string masa_aktif; 
   if(pilih == 1){
     single();
-    durasi_bulan = 1;
-    data.masamember = bulan(data.tanggal_pendaftaran,durasi_bulan);
+    data.masamember = bulan(data.tanggal_pendaftaran,1);
+  
     bayar(data,jumlahpendaftar,dataharga,pilih);
-    
-    
   }else if(pilih == 2){
     single();
-    durasi_bulan = 3;  
-    data.masamember = bulan(data.tanggal_pendaftaran,durasi_bulan);
+    data.masamember = bulan(data.tanggal_pendaftaran,3);
+  
     bayar(data,jumlahpendaftar,dataharga,pilih);
-
   }else if(pilih == 3){
-    single();
-    durasi_bulan = 6; 
-    data.masamember = bulan(data.tanggal_pendaftaran,durasi_bulan);
-    bayar(data,jumlahpendaftar,dataharga,pilih);
+    single();    
+    data.masamember = bulan(data.tanggal_pendaftaran,6);
     
+    bayar(data,jumlahpendaftar,dataharga,pilih);    
   }else {
     cout << "pilihan yang anda masukan tidak tersedia !!" << endl; 
     cout << "MATANE PICEK TA RA ONO BLOQ " << endl; 
@@ -326,7 +323,7 @@ void utama(vector<formulir>& member,formulir &data, int &nomorkartu,int &jumlahp
   int pendaftar = jumlahpendaftar/jumlahpendaftar;
   while(a <= jumlahpendaftar){
     pendaftaran_member(member,data,nomorkartu);
-    harga_member(data,pendaftar,durasi_bulan);
+    harga_member(pendaftar,durasi_bulan);
     a++; 
     jumlahpendaftar--;
     cin.ignore();
