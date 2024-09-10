@@ -33,6 +33,7 @@ struct formulir{
   string nama,alamat,email, no_tlp,no_ktp,tanggal_pendaftaran,masamember;
   int berat_badan, tinggi_badan,umur,nomor_kartu; 
   bool status_pembayaran;
+  string status_bayar;
   
 };
 
@@ -142,9 +143,7 @@ void pendaftaran_member(vector<formulir>& member,formulir data,int &nomorkartu){
     data.tanggal_pendaftaran = getTimeStr();
     // data.masamember = waktu_member(durasi_bulan);
     cout << data.tanggal_pendaftaran << endl;
-    cout << data.masamember << endl;
     cout << endl;
-    cout << "pastikan semua sudah terisi !! " << endl;
     single();
     //logika penambahan data ke dalam vector dan ke menambahkan nomor kartu
     data.nomor_kartu = nomorkartu;
@@ -352,8 +351,7 @@ void pengunjung(vector <formulir>& data_pengunjung, vector<formulir>& member,for
   //penawaran masuk member atau tidak 
   cout << "HAI ANDA BELUM MEMBER \n";
   cout << "apakah anda ingin menjadi anggota member ? \n";
-  cout << "-DAFTAR :)\n";
-  cout << "-Tidak :( \n";
+  cout << "-DAFTAR \n" "-Tidak \n";
   cout << "jawaban : " ;
   cin >> daftar;
   cin.ignore();
@@ -393,9 +391,14 @@ void pengunjung(vector <formulir>& data_pengunjung, vector<formulir>& member,for
         pembayaran(total_tagihan);
           for(formulir &pengunjung : data_pengunjung){
             pengunjung.status_pembayaran = true;
+            pengunjung.status_bayar = "sudah bayar";
           }
         status_pembayaran_pengunjung = true; 
       }else if(membayar == "nanti"){
+        for(formulir &pengunjung : data_pengunjung){
+          pengunjung.status_pembayaran = false;
+          pengunjung.status_bayar = "belum bayar";
+        }
         status_pembayaran_pengunjung = false; 
       }
     }
@@ -424,7 +427,8 @@ void cari_pengunjung( const vector<formulir>& data_pengunjung, const string &nam
       cout << "Data di temukan!!" << endl; 
       cout << "nama " << setw(17) << ":" << formulir.nama << endl;
       cout << "alamat " << setw(15) << ":" << formulir.alamat << endl; 
-    cout << "no-telpon " << setw(12) << ":" << formulir.no_tlp << endl;
+      cout << "no-telpon " << setw(12) << ":" << formulir.no_tlp << endl;
+      cout << "status pembayaran " << setw(8) << ":" << formulir.status_bayar << endl;
       terdata = true; 
       if(status_pembayaran_pengunjung== true){
         break;
@@ -435,6 +439,7 @@ void cari_pengunjung( const vector<formulir>& data_pengunjung, const string &nam
         cout << "total tagihan anda " << setw(6) << ": " << tagihan << endl; 
         pembayaran(tagihan);
         status_pembayaran_pengunjung = true;
+        
       }
     }else if(!terdata){
       //logika jika nama yang di cari tidak terdata atau tidak ada di dalam vector
@@ -542,7 +547,7 @@ int main(){
               string kembaliInput;        
                     cout << "kembali : "; 
                     cin >> kembaliInput;                  
-                    if(kembaliInput == "ya"){
+                    if(kembaliInput == "iya"){
                       clearscreen();                    
                     }
             }          
@@ -553,7 +558,7 @@ int main(){
             while(true){
               single();
               cout << "Data pengunjung MAK GYM" << endl; 
-              cout << "MENU : \n" "masuk\n" "keluar\n" "kembali ke menu awal \n";
+              cout << "MENU \n" "masuk\n" "keluar\n" "kembali\n";
               cout << "pilih : "; cin >> memilih; 
               cin.ignore();
               //kondisi untuk menjalankan menu di atas tersebut 
@@ -561,13 +566,14 @@ int main(){
                 if(memilih == "masuk"){
                   clearscreen();
                   //memanggil prosedur pengunjung 
+                  garis();
                   pengunjung(data_pengunjung,member,data,status_pembayaran_pengunjung,total_pengunjung);                                
 
                   string back;
                   cout << "kembali : ";
                   cin >> back; 
                   cin.ignore();
-                    if(back == "ya"){
+                    if(back == "iya"){
                       clearscreen();
                       
                     }
@@ -584,7 +590,7 @@ int main(){
 
                     cout << "kembali : ";
                     cin >> back; 
-                      if(back == "ya"){
+                      if(back == "iya"){
                         clearscreen();                      
                       }
                   }else if(memilih == "kembali"){
@@ -598,7 +604,7 @@ int main(){
                   cout << "kembali : ";
                   cin >> back; 
                   cin.ignore();
-                    if(back == "ya"){
+                    if(back == "iya"){
                       clearscreen();
                       
                     }
