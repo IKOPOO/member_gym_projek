@@ -22,11 +22,6 @@
 #include<sstream>
 using namespace std; 
 
-
-//kamus 
-
-
-
 //membuat tipe data bentukan untuk formulir pengisian data 
 struct formulir{
 
@@ -37,15 +32,15 @@ struct formulir{
   
 };
 
-const int MAX_MEMBER = 3;  //MAKSIMAL MEMBER
+
 int durasi_bulan;
 
 //untuk mengambil tanggal bulan waktu secara real time 
 string getTimeStr(){
-    auto now = chrono::system_clock::now();
-    auto now_time_t = chrono::system_clock::to_time_t(now);
 
-    tm* time_info = localtime(&now_time_t);
+    auto now = chrono::system_clock::now(); //mengambil waktu saat ini dari sistem
+    auto now_time_t = chrono::system_clock::to_time_t(now);//mengkonversi time_point yang diambil ke dalam bentuk time_t
+    tm* time_info = localtime(&now_time_t);//mengonversi time_t ke dalam std::tm yang berupa pointer ke struct std::tm yang menyimpan struktur waktu dalam format yang lebih terperinci
 
     //mengubah ke dalam format tanggal yang di inginkan 
     stringstream ss;
@@ -53,30 +48,36 @@ string getTimeStr(){
     return ss.str();
 }
 
+//fungsi untuk mengonversi string yang berformat tanggal ke dalam bentuk Tm 
 tm stringToTm(const string& tanggal){
-  
-  tm tm = {};
-  stringstream ss(tanggal); 
-  ss >> get_time(&tm, "%d %B %Y");
+  //tm adalah struktur yang menyimpan informasi waktu, jam, menit, detik, tahun, bulan, hari, 
+  tm tm = {}; //membuat object tm yang diinisialisasi 0 pada semua bidangnya 
+  stringstream ss(tanggal); //inisialisasi object stringstream dengan nama ss dan input yang diambil dari parameter tanggal
+  ss >> get_time(&tm, "%d %B %Y");//parsing string tanggal menggunakan format yang sudah di tentukan 
+  //fungsi get_time adalah mencocokkan tanggal dengan format yang sudah diberikan, lalu disimpan didalam tm
 
   tm.tm_isdst = -1; 
   return tm; 
 }
 
+//konversi struktur tm yang isinya informasi waktu dalam format internal ke dalam bentuk string 
 string tmToString(const tm& time_info){
-  stringstream ss; 
-  ss << put_time(&time_info, "%d %B %Y");
+
+  stringstream ss; // inisialisasi object stringstream dengan nama ss
+  ss << put_time(&time_info, "%d %B %Y"); //fungsi put_time untuk konversi object time_info ke dalam format yang ditentukan 
 
   return ss.str();
 }
 
+//fungsi ini adalah untuk mendapatkan durasi waktu yang dibutuhkan 
 string bulan(const string& tanggal, const int durasi){
-  tm tm1 = stringToTm(tanggal); 
+  tm tm1 = stringToTm(tanggal); //membuat object tm yang diinisialisasi hasil dari fungsi strinToTm(tanggal)
 
-  tm1.tm_mon += durasi; 
+  tm1.tm_mon += durasi; //menambahkan bulan ke dalam 
   mktime(&tm1);
   return tmToString(tm1);
 }
+
 //untuk menampilkan garis pemisah agar tampilan tidak terlalu amburadul
 //garis single 
 void single(){
@@ -108,10 +109,11 @@ void clearscreen(){
 }
 
 vector <formulir> member; //vector untuk menaruh data member
-
-//variabel untuk inisialisasi nomor kartu member
-int nomorkartu = 1;
+bool status_pembayaran_pengunjung;
+int totalharga; 
+int nomorkartu = 1; //variabel untuk inisialisasi nomor kartu member
 int jumlahpendaftar = 0;
+
 //fungsi untuk mengisi data formulir dan memasukkan data ke dalam array
 void pendaftaran_member(vector<formulir>& member,formulir data,int &nomorkartu){
   //mengisi data formulir pendaftaran member sesuai jumlah orang yang daftar
@@ -140,22 +142,19 @@ void pendaftaran_member(vector<formulir>& member,formulir data,int &nomorkartu){
     getline(cin, data.email);
     single();
     cout << "INI no-kartu member anda " << setw(3) << ": " << nomorkartu << endl; 
-    data.tanggal_pendaftaran = getTimeStr();
-    // data.masamember = waktu_member(durasi_bulan);
+    data.tanggal_pendaftaran = getTimeStr(); //mengambil data waktu secara real time 
     cout << data.tanggal_pendaftaran << endl;
     cout << endl;
     single();
+
     //logika penambahan data ke dalam vector dan ke menambahkan nomor kartu
-    data.nomor_kartu = nomorkartu;
+    data.nomor_kartu = nomorkartu; 
     nomorkartu++; 
-    member.push_back(data);
+    member.push_back(data); //memasukkan data pendaftar ke dalam vector member belakang 
     cout << "Selamat pendaftaran berhasil!!" << endl; 
     garis();
-  
 }
 
-bool status_pembayaran_pengunjung;
-int totalharga; 
 void pembayaran(int &totalharga){
 
   int totalpembayaran = 0; // variabel untuk menyimpan nominal pembayaran 
@@ -221,6 +220,7 @@ void bayar(const formulir &data, int &jumlahpendaftar, int dataharga[],int p){
   - 6 bulan   = 325.000
 
 */
+
 //array data harga
 int dataharga[3] = {445000,385000,325000};
 
@@ -228,7 +228,7 @@ void harga_member( int &jumlahpendaftar,int durasi_bulan){
 
   //kamus lokal 
   int pilih;
-  formulir &data = member.back();
+  formulir &data = member.back(); //mengakses vector member paling bawah dan melakukan perubahan 
 
   //deskripsi
   cout << "Daftar membership MAK GYM" << endl; 
@@ -241,22 +241,20 @@ void harga_member( int &jumlahpendaftar,int durasi_bulan){
   garis();
   cout << "Silahkan tentukan pilihan anda !!" << endl; 
   cout << "Pilih : " ; cin >> pilih;  
-  //kondisi jika kita memilih dari tiga pilihan di atas x`
+
+  //kondisi jika kita memilih dari tiga pilihan di atas 
   string masa_aktif; 
   if(pilih == 1){
     single();
-    data.masamember = bulan(data.tanggal_pendaftaran,1);
-  
+    data.masamember = bulan(data.tanggal_pendaftaran,1);  
     bayar(data,jumlahpendaftar,dataharga,pilih);
   }else if(pilih == 2){
     single();
-    data.masamember = bulan(data.tanggal_pendaftaran,3);
-  
+    data.masamember = bulan(data.tanggal_pendaftaran,3); //  
     bayar(data,jumlahpendaftar,dataharga,pilih);
   }else if(pilih == 3){
     single();    
-    data.masamember = bulan(data.tanggal_pendaftaran,6);
-    
+    data.masamember = bulan(data.tanggal_pendaftaran,6);    
     bayar(data,jumlahpendaftar,dataharga,pilih);    
   }else {
     cout << "pilihan yang anda masukan tidak tersedia !!" << endl; 
@@ -428,7 +426,7 @@ void cari_pengunjung( const vector<formulir>& data_pengunjung, const string &nam
       cout << "nama " << setw(17) << ":" << formulir.nama << endl;
       cout << "alamat " << setw(15) << ":" << formulir.alamat << endl; 
       cout << "no-telpon " << setw(12) << ":" << formulir.no_tlp << endl;
-      cout << "status pembayaran " << setw(8) << ":" << formulir.status_bayar << endl;
+      cout << "status pembayaran " << setw(5) << ":" << formulir.status_bayar << endl;
       terdata = true; 
       if(status_pembayaran_pengunjung== true){
         break;
@@ -558,7 +556,7 @@ int main(){
             while(true){
               single();
               cout << "Data pengunjung MAK GYM" << endl; 
-              cout << "MENU \n" "masuk\n" "keluar\n" "kembali\n";
+              cout << "MENU \n" "-Masuk\n" "-Keluar\n" "kembali\n";
               cout << "pilih : "; cin >> memilih; 
               cin.ignore();
               //kondisi untuk menjalankan menu di atas tersebut 
